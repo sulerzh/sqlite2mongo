@@ -1,0 +1,20 @@
+ install pil:
+1/ download get-pip.py(https://bootstrap.pypa.io/get-pip.py)
+2/ python get-pip.py
+
+ install pymongo
+1/ pip install pymongo
+
+ install PIL 
+
+1/ install python-devel/libjpeg-devel/libpng-devel
+ yum install python-devel/libjpeg-devel/libpng-devel
+2/ pip install PIL --allow-external PIL --allow-unverified PIL
+
+mont ntfs
+1/ fdisk -l
+2/ mount -t ntfs-3g /dev/sdc2 /mnt/windows
+
+python script
+1/ cd /home
+2/ python main.py -i /mnt/windows/meta/meta -o /home/export -db mongodb://localhost:27017
