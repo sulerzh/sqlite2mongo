@@ -172,7 +172,10 @@ def process(input_file, output_dir, db_url):
             save_bin_file(thumb_file, thumb_bin)
             png_file = base_dir + '/' + filename + '.png'
             save_image(png_file, png_bin, True)
+        except Exception, expinfo:
+            print Exception,":",expinfo
 
+        try:
             thumb_arrays = get_bin_file(thumb_file)
             standard_acquisition_time = acquisition_time.replace('/', '-')
             # build product
