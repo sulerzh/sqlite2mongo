@@ -1,6 +1,8 @@
  install pil:
 1/ download get-pip.py(https://bootstrap.pypa.io/get-pip.py)
 2/ python get-pip.py
+or 
+sudo apt-get install python-pip
 
  install pymongo
 1/ pip install pymongo

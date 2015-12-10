@@ -139,9 +139,13 @@ def process(input_file, output_dir, db_url):
         product_ll_lon = row['PRODUCTLOWERLEFTLONG']
         product_lr_lat = row['PRODUCTLOWERRIGHTLAT']
         product_lr_lon = row['PRODUCTLOWERRIGHTLONG']
+
+        if db.metadata.find({"productid" : productid}).count() > 0:
+            print str(productid) + ' is existed.'
+            return
         
+        print input_file
         print productid
-        print type(thumb_bin)
 
         # get geojson boundary
         boundary = {}
@@ -157,48 +161,45 @@ def process(input_file, output_dir, db_url):
                                     data_lr_lon, data_lr_lat)
         
         # save files 
-        base_dir = output_dir + '/' + str(track_id) + '/' + str(scene_path) + '/' + str(scene_row)
-        create_dir(base_dir)
-        meta_file = base_dir + '/' + filename + '.xml'
-        save_bin_file(meta_file, metadata_bin)
-        quick_file = base_dir + '/' + filename + '_pre.jpg'
-        save_bin_file(quick_file, quickview_bin)
-        thumb_file = base_dir + '/' + filename + '_thumb.jpg'
-        save_bin_file(thumb_file, thumb_bin)
-        png_file = base_dir + '/' + filename + '.png'
-        save_image(png_file, png_bin, True)
+        try:
+            base_dir = output_dir + '/' + str(track_id) + '/' + str(scene_path) + '/' + str(scene_row)
+            create_dir(base_dir)
+            meta_file = base_dir + '/' + filename + '.xml'
+            save_bin_file(meta_file, metadata_bin)
+            quick_file = base_dir + '/' + filename + '_pre.jpg'
+            save_bin_file(quick_file, quickview_bin)
+            thumb_file = base_dir + '/' + filename + '_thumb.jpg'
+            save_bin_file(thumb_file, thumb_bin)
+            png_file = base_dir + '/' + filename + '.png'
+            save_image(png_file, png_bin, True)
 
-        thumb_arrays = get_bin_file(thumb_file)
-        standard_acquisition_time = acquisition_time.replace('/', '-')
-        # build product
-        product = {
-            "productid" : productid,
-            "filename" : filename + '.tar',
-            "satelliteid" : satelliteid,
-            "receivestationid" : receive_station_id,
-            "sensorid" : sensor_id,
-            "acquisitiontime" : datetime.strptime(standard_acquisition_time, "%Y-%m-%d %H:%M:%S"),
-            "inputtime" : datetime.today(),
-            "cloudpercent" : cloud_percent,
-            "sceneid" : 0,
-            "orbitid" : track_id,
-            "scenepath" : scene_path,
-            "scenerow" : scene_row,
-            "taruri" : "",
-            "quickviewuri" : "",
-            "boundary" : boundary,
-            "thumbview" : Binary(thumb_arrays),
-            "metadata" : {}
-        }
+            thumb_arrays = get_bin_file(thumb_file)
+            standard_acquisition_time = acquisition_time.replace('/', '-')
+            # build product
+            product = {
+                "productid" : productid,
+                "filename" : filename + '.tar',
+                "satelliteid" : satelliteid,
+                "receivestationid" : receive_station_id,
+                "sensorid" : sensor_id,
+                "acquisitiontime" : datetime.strptime(standard_acquisition_time, "%Y-%m-%d %H:%M:%S"),
+                "inputtime" : datetime.today(),
+                "cloudpercent" : cloud_percent,
+                "sceneid" : 0,
+                "orbitid" : track_id,
+                "scenepath" : scene_path,
+                "scenerow" : scene_row,
+                "taruri" : "",
+                "quickviewuri" : "",
+                "boundary" : boundary,
+                "thumbview" : Binary(thumb_arrays),
+                "metadata" : {}
+            }
 
-        # print product
-
-        # insert record to mongodb
-        if db.metadata.find({"productid" : productid}).count() == 0:
             print 'insert ' + str(productid)
             db.metadata.insert_one(product)
-        else:
-            print str(productid) + ' is existed.'
+        except Exception, expinfo:
+            print Exception,":",expinfo
 
 
 
