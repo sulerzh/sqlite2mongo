@@ -115,7 +115,7 @@ def process(input_file, output_dir, db_url):
         sensor_id = row['SENSORID']
         acquisition_time = row['IMAGINGSTARTTIME']
         print acquisition_time
-        cloud_percent = row['CLOUDAMOUNT']
+        cloud_percent = int(row['CLOUDAMOUNT'])
         track_id = row['TRACKID']
         scene_path = row['SCENEPATH']
         scene_row = row['SCENEROW']
